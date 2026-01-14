@@ -43,7 +43,7 @@ function InitiativeTracker({ entries, onAddEntry, showEditor }: InitiativeTracke
         </div>
       )}
       <div className="initiative-list">
-        {entries.map((entry, index) => (
+        {entries.map((entry, _index) => (
           <div
             key={entry.id}
             className="initiative-circle"
