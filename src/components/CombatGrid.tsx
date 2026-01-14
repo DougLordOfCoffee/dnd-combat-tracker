@@ -18,6 +18,10 @@ function CombatGrid({ units, onUpdatePosition }: CombatGridProps) {
     e.preventDefault()
   }
 
+  const handleDragStart = (e: React.DragEvent, unitId: string) => {
+    e.dataTransfer.setData('text/plain', unitId)
+  }
+
   return (
     <div className="combat-grid">
       {Array.from({ length: GRID_SIZE }, (_, y) => (
@@ -31,7 +35,7 @@ function CombatGrid({ units, onUpdatePosition }: CombatGridProps) {
                 onDrop={(e) => handleDrop(e, x, y)}
                 onDragOver={handleDragOver}
               >
-                {unit && <span className="unit-on-grid">{unit.icon}</span>}
+                {unit && <span className="unit-on-grid" draggable onDragStart={(e) => handleDragStart(e, unit.id)}>{unit.icon}</span>}
               </div>
             )
           })}

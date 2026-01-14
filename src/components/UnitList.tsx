@@ -7,13 +7,14 @@ interface UnitListProps {
   showEditor: boolean
   onAddUnit: (name: string, icon: string) => void
   onUpdateHP: (id: string, currentHP: number, maxHP: number) => void
-  onAddBuff: (unitId: string, buff: Omit<Buff, 'id' | 'startTime'>) => void
+  onUpdateStats: (id: string, ac: number, speed: number, initiative: number) => void
+  onRequestAddBuff: (unitId: string) => void
   selectedStatusEffect: { name: string, icon: string } | null
 }
 
 const icons = ['🧙', '⚔️', '🛡️', '🏹', '🐉', '👹', '🧟', '🦄', '🧝', '🧌', '👻', '🦇', '🐺', '🦈', '🦊', '🐻'] // Add more icons
 
-function UnitList({ units, showEditor, onAddUnit, onUpdateHP, onAddBuff, selectedStatusEffect }: UnitListProps) {
+function UnitList({ units, showEditor, onAddUnit, onUpdateHP, onUpdateStats, onRequestAddBuff, selectedStatusEffect }: UnitListProps) {
   const [newUnitName, setNewUnitName] = useState('')
   const [selectedIcon, setSelectedIcon] = useState(icons[0])
 
@@ -46,7 +47,8 @@ function UnitList({ units, showEditor, onAddUnit, onUpdateHP, onAddBuff, selecte
           unit={unit}
           showEditor={showEditor}
           onUpdateHP={onUpdateHP}
-          onAddBuff={onAddBuff}
+          onUpdateStats={onUpdateStats}
+          onRequestAddBuff={onRequestAddBuff}
           selectedStatusEffect={selectedStatusEffect}
         />
       ))}

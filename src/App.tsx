@@ -20,6 +20,9 @@ export interface Unit {
   icon: string
   currentHP: number
   maxHP: number
+  ac: number
+  speed: number
+  initiative: number
   buffs: Buff[]
   position: { x: number, y: number }
 }
@@ -46,6 +49,8 @@ function App() {
   const [initiative, setInitiative] = useState<InitiativeEntry[]>([])
   const [showEditor, setShowEditor] = useState(true)
   const [selectedStatusEffect, setSelectedStatusEffect] = useState<{ name: string, icon: string } | null>(null)
+  const [selectedUnitForBuff, setSelectedUnitForBuff] = useState<string | null>(null)
+  const [buffDuration, setBuffDuration] = useState(60)
   const [description, setDescription] = useState('')
 
   // Timer for buffs
@@ -66,6 +71,9 @@ function App() {
       icon,
       currentHP: 10,
       maxHP: 10,
+      ac: 10,
+      speed: 30,
+      initiative: 0,
       buffs: [],
       position: { x: 0, y: 0 }
     }
@@ -76,9 +84,22 @@ function App() {
     setUnits(prev => prev.map(unit => unit.id === id ? { ...unit, currentHP, maxHP } : unit))
   }
 
-  const addBuffToUnit = (unitId: string, buff: Omit<Buff, 'id' | 'startTime'>) => {
-    const newBuff: Buff = { ...buff, id: Date.now().toString(), startTime: Date.now() }
-    setUnits(prev => prev.map(unit => unit.id === unitId ? { ...unit, buffs: [...unit.buffs, newBuff] } : unit))
+  const updateUnitStats = (id: string, ac: number, speed: number, initiative: number) => {
+    setUnits(prev => prev.map(unit => unit.id === id ? { ...unit, ac, speed, initiative } : unit))
+  }
+
+  const requestAddBuff = (unitId: string) => {
+    setSelectedUnitForBuff(unitId)
+  }
+
+  const acceptBuff = () => {
+    if (selectedStatusEffect && selectedUnitForBuff) {
+      const effect = { name: selectedStatusEffect.name, icon: selectedStatusEffect.icon, duration: buffDuration }
+      addBuffToUnit(selectedUnitForBuff, effect)
+      setSelectedStatusEffect(null)
+      setSelectedUnitForBuff(null)
+      setBuffDuration(60)
+    }
   }
 
   const addInitiative = (name: string, initiativeValue: number) => {
@@ -97,15 +118,25 @@ function App() {
       </button>
       <div className="main-layout">
         <div className="left-panel">
+          {showEditor && selectedUnitForBuff && (
+            <StatusEffectSelector
+              effects={statusEffects}
+              onSelect={setSelectedStatusEffect}
+              selectedEffect={selectedStatusEffect}
+              duration={buffDuration}
+              onDurationChange={setBuffDuration}
+              onAccept={acceptBuff}
+            />
+          )}
           <UnitList
             units={units}
             showEditor={showEditor}
             onAddUnit={addUnit}
             onUpdateHP={updateUnitHP}
-            onAddBuff={addBuffToUnit}
+            onUpdateStats={updateUnitStats}
+            onRequestAddBuff={requestAddBuff}
             selectedStatusEffect={selectedStatusEffect}
           />
-          {showEditor && <StatusEffectSelector effects={statusEffects} onSelect={setSelectedStatusEffect} />}
         </div>
         <div className="center-panel">
           <CombatGrid units={units} onUpdatePosition={(id, pos) => setUnits(prev => prev.map(u => u.id === id ? { ...u, position: pos } : u))} />

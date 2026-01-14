@@ -7,22 +7,19 @@ interface UnitCardProps {
   unit: Unit
   showEditor: boolean
   onUpdateHP: (id: string, currentHP: number, maxHP: number) => void
-  onAddBuff: (unitId: string, buff: Omit<Buff, 'id' | 'startTime'>) => void
+  onUpdateStats: (id: string, ac: number, speed: number, initiative: number) => void
+  onRequestAddBuff: (unitId: string) => void
   selectedStatusEffect: { name: string, icon: string } | null
 }
 
-function UnitCard({ unit, showEditor, onUpdateHP, onAddBuff, selectedStatusEffect }: UnitCardProps) {
-  const [buffDuration, setBuffDuration] = useState(60) // default 1 minute
+function UnitCard({ unit, showEditor, onUpdateHP, onUpdateStats, onRequestAddBuff, selectedStatusEffect }: UnitCardProps) {
 
   const handleDragStart = (e: React.DragEvent) => {
     e.dataTransfer.setData('text/plain', unit.id)
   }
 
   const handleAddBuff = () => {
-    if (selectedStatusEffect) {
-      const effect = { name: selectedStatusEffect.name, icon: selectedStatusEffect.icon, duration: buffDuration }
-      onAddBuff(unit.id, effect)
-    }
+    onRequestAddBuff(unit.id)
   }
 
   return (
@@ -40,21 +37,24 @@ function UnitCard({ unit, showEditor, onUpdateHP, onAddBuff, selectedStatusEffec
         onUpdate={(current, max) => onUpdateHP(unit.id, current, max)}
         showEditor={showEditor}
       />
+      {showEditor ? (
+        <div className="unit-stats">
+          <label>AC: <input type="number" value={unit.ac} onChange={(e) => onUpdateStats(unit.id, Number(e.target.value), unit.speed, unit.initiative)} /></label>
+          <label>Speed: <input type="number" value={unit.speed} onChange={(e) => onUpdateStats(unit.id, unit.ac, Number(e.target.value), unit.initiative)} /></label>
+          <label>Init: <input type="number" value={unit.initiative} onChange={(e) => onUpdateStats(unit.id, unit.ac, unit.speed, Number(e.target.value))} /></label>
+        </div>
+      ) : (
+        <div className="unit-stats-display">
+          <span>AC: {unit.ac}</span>
+          <span>Speed: {unit.speed}</span>
+          <span>Init: {unit.initiative}</span>
+        </div>
+      )}
       <div className="buffs">
         {unit.buffs.map(buff => (
           <BuffTimer key={buff.id} buff={buff} />
         ))}
       </div>
-      {showEditor && selectedStatusEffect && (
-        <div className="buff-duration">
-          <label>Duration (seconds):</label>
-          <input
-            type="number"
-            value={buffDuration}
-            onChange={(e) => setBuffDuration(Number(e.target.value))}
-          />
-        </div>
-      )}
     </div>
   )
 }

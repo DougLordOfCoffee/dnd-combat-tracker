@@ -20,13 +20,15 @@
   display: flex;
   flex: 1;
   overflow: hidden;
+  height: calc(100vh - 120px); /* adjust for toggle button and description */
 }
 
 .left-panel {
-  width: 300px;
+  width: 350px;
   background: #f8f9fa;
   padding: 10px;
   overflow-y: auto;
+  flex-shrink: 0;
 }
 
 .center-panel {
@@ -35,13 +37,15 @@
   justify-content: center;
   align-items: center;
   background: #e9ecef;
+  overflow: auto;
 }
 
 .right-panel {
-  width: 250px;
+  width: 280px;
   background: #f8f9fa;
   padding: 10px;
   overflow-y: auto;
+  flex-shrink: 0;
 }
 
 .unit-list {
@@ -208,6 +212,9 @@
   flex-direction: column;
   border: 1px solid #dee2e6;
   background: white;
+  max-width: 100%;
+  max-height: 100%;
+  overflow: auto;
 }
 
 .grid-row {
@@ -270,24 +277,48 @@
   font-weight: bold;
 }
 
-.description-box {
-  position: fixed;
-  bottom: 0;
-  left: 0;
-  right: 0;
-  background: white;
-  border-top: 1px solid #dee2e6;
-  padding: 10px;
+.unit-stats {
+  display: flex;
+  gap: 10px;
+  margin: 5px 0;
 }
 
-.description-box textarea {
-  width: 100%;
-  border: none;
-  resize: none;
+.unit-stats label {
+  display: flex;
+  align-items: center;
+  gap: 5px;
+  font-size: 12px;
 }
 
-.description-display {
-  padding: 10px;
-  background: #f8f9fa;
-  border-radius: 4px;
+.unit-stats input {
+  width: 40px;
+}
+
+.unit-stats-display {
+  display: flex;
+  gap: 10px;
+  margin: 5px 0;
+  font-size: 12px;
+}
+
+.buff-setup {
+  margin-top: 10px;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.buff-setup label {
+  display: flex;
+  align-items: center;
+  gap: 5px;
+}
+
+.buff-setup input {
+  width: 60px;
+}
+
+.effect-button.selected {
+  background: #007bff;
+  color: white;
 }
