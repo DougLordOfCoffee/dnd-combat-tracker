@@ -1,5 +1,5 @@
 import { useState } from 'react'
-import type { Unit, Buff } from '../App'
+import type { Unit } from '../App'
 import UnitCard from './UnitCard'
 
 interface UnitListProps {
@@ -10,12 +10,11 @@ interface UnitListProps {
   onUpdateStats: (id: string, ac: number, speed: number, initiative: number) => void
   onUpdateDescription: (id: string, description: string) => void
   onRequestAddBuff: (unitId: string) => void
-  selectedStatusEffect: { name: string, icon: string } | null
 }
 
 const icons = ['🧙', '⚔️', '🛡️', '🏹', '🐉', '👹', '🧟', '🦄', '🧝', '🧌', '👻', '🦇', '🐺', '🦈', '🦊', '🐻'] // Add more icons
 
-function UnitList({ units, showEditor, onAddUnit, onUpdateHP, onUpdateStats, onUpdateDescription, onRequestAddBuff, selectedStatusEffect }: UnitListProps) {
+function UnitList({ units, showEditor, onAddUnit, onUpdateHP, onUpdateStats, onUpdateDescription, onRequestAddBuff }: UnitListProps) {
   const [newUnitName, setNewUnitName] = useState('')
   const [selectedIcon, setSelectedIcon] = useState(icons[0])
 
@@ -51,7 +50,6 @@ function UnitList({ units, showEditor, onAddUnit, onUpdateHP, onUpdateStats, onU
           onUpdateStats={onUpdateStats}
           onUpdateDescription={onUpdateDescription}
           onRequestAddBuff={onRequestAddBuff}
-          selectedStatusEffect={selectedStatusEffect}
         />
       ))}
     </div>

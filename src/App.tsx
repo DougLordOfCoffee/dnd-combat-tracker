@@ -3,7 +3,6 @@ import './App.css'
 import UnitList from './components/UnitList'
 import CombatGrid from './components/CombatGrid'
 import InitiativeTracker from './components/InitiativeTracker'
-import DescriptionBox from './components/DescriptionBox'
 import StatusEffectSelector from './components/StatusEffectSelector'
 
 export interface Buff {
@@ -52,7 +51,6 @@ function App() {
   const [selectedStatusEffect, setSelectedStatusEffect] = useState<{ name: string, icon: string } | null>(null)
   const [selectedUnitForBuff, setSelectedUnitForBuff] = useState<string | null>(null)
   const [buffDuration, setBuffDuration] = useState(60)
-  const [description, setDescription] = useState('')
 
   // Timer for buffs
   useEffect(() => {
@@ -92,6 +90,15 @@ function App() {
 
   const updateUnitDescription = (id: string, description: string) => {
     setUnits(prev => prev.map(unit => unit.id === id ? { ...unit, description } : unit))
+  }
+
+  const updateUnitStats = (id: string, ac: number, speed: number, initiative: number) => {
+    setUnits(prev => prev.map(unit => unit.id === id ? { ...unit, ac, speed, initiative } : unit))
+  }
+
+  const addBuffToUnit = (unitId: string, buff: Omit<Buff, 'id' | 'startTime'>) => {
+    const newBuff: Buff = { ...buff, id: Date.now().toString(), startTime: Date.now() }
+    setUnits(prev => prev.map(unit => unit.id === unitId ? { ...unit, buffs: [...unit.buffs, newBuff] } : unit))
   }
 
   const requestAddBuff = (unitId: string) => {
@@ -142,7 +149,6 @@ function App() {
             onUpdateStats={updateUnitStats}
             onUpdateDescription={updateUnitDescription}
             onRequestAddBuff={requestAddBuff}
-            selectedStatusEffect={selectedStatusEffect}
           />
         </div>
         <div className="center-panel">
@@ -158,5 +164,8 @@ function App() {
           />
         </div>
       </div>
+    </div>
+  )
+}
 
 export default App
