@@ -1,21 +1,27 @@
 import { useState } from 'react'
-import type { InitiativeEntry } from '../App'
+import type { InitiativeEntry, Unit } from '../App'
 
 interface InitiativeTrackerProps {
   entries: InitiativeEntry[]
-  onAddEntry: (name: string, initiative: number) => void
+  units: Unit[]
+  onAddEntry: (unitId: string, initiative: number) => void
+  onUpdateUnitInitiative: (unitId: string, initiative: number) => void
   showEditor: boolean
 }
 
-function InitiativeTracker({ entries, onAddEntry, showEditor }: InitiativeTrackerProps) {
-  const [input, setInput] = useState('')
+function InitiativeTracker({ entries, units, onAddEntry, onUpdateUnitInitiative, showEditor }: InitiativeTrackerProps) {
+  const [selectedUnitId, setSelectedUnitId] = useState('')
   const [initiativeValue, setInitiativeValue] = useState(0)
 
   const handleAdd = () => {
-    if (input.trim()) {
-      onAddEntry(input, initiativeValue)
-      setInput('')
-      setInitiativeValue(0)
+    if (selectedUnitId) {
+      const unit = units.find(u => u.id === selectedUnitId)
+      if (unit) {
+        onAddEntry(selectedUnitId, initiativeValue)
+        onUpdateUnitInitiative(selectedUnitId, initiativeValue)
+        setSelectedUnitId('')
+        setInitiativeValue(0)
+      }
     }
   }
 
@@ -27,17 +33,18 @@ function InitiativeTracker({ entries, onAddEntry, showEditor }: InitiativeTracke
     <div className="initiative-tracker">
       {showEditor && (
         <div className="add-initiative">
-          <input
-            type="text"
-            value={input}
-            onChange={(e) => setInput(e.target.value)}
-            placeholder="Name"
-          />
+          <select value={selectedUnitId} onChange={(e) => setSelectedUnitId(e.target.value)}>
+            <option value="">Select Unit</option>
+            {units.map(unit => (
+              <option key={unit.id} value={unit.id}>{unit.name}</option>
+            ))}
+          </select>
           <input
             type="number"
             value={initiativeValue}
             onChange={(e) => setInitiativeValue(Number(e.target.value))}
             placeholder="Initiative"
+            min="0"
           />
           <button onClick={handleAdd}>Add</button>
         </div>
@@ -50,7 +57,7 @@ function InitiativeTracker({ entries, onAddEntry, showEditor }: InitiativeTracke
             draggable
             onDragStart={(e) => handleDragStart(e, entry)}
           >
-            <span className="initiative-name">{entry.name}</span>
+            <span className="initiative-name">{units.find(u => u.id === entry.unitId)?.name || 'Unknown'}</span>
             <span className="initiative-value">{entry.initiative}</span>
           </div>
         ))}

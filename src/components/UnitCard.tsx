@@ -8,11 +8,12 @@ interface UnitCardProps {
   showEditor: boolean
   onUpdateHP: (id: string, currentHP: number, maxHP: number) => void
   onUpdateStats: (id: string, ac: number, speed: number, initiative: number) => void
+  onUpdateDescription: (id: string, description: string) => void
   onRequestAddBuff: (unitId: string) => void
   selectedStatusEffect: { name: string, icon: string } | null
 }
 
-function UnitCard({ unit, showEditor, onUpdateHP, onUpdateStats, onRequestAddBuff, selectedStatusEffect }: UnitCardProps) {
+function UnitCard({ unit, showEditor, onUpdateHP, onUpdateStats, onUpdateDescription, onRequestAddBuff, selectedStatusEffect }: UnitCardProps) {
 
   const handleDragStart = (e: React.DragEvent) => {
     e.dataTransfer.setData('text/plain', unit.id)
@@ -39,9 +40,9 @@ function UnitCard({ unit, showEditor, onUpdateHP, onUpdateStats, onRequestAddBuf
       />
       {showEditor ? (
         <div className="unit-stats">
-          <label>AC: <input type="number" value={unit.ac} onChange={(e) => onUpdateStats(unit.id, Number(e.target.value), unit.speed, unit.initiative)} /></label>
-          <label>Speed: <input type="number" value={unit.speed} onChange={(e) => onUpdateStats(unit.id, unit.ac, Number(e.target.value), unit.initiative)} /></label>
-          <label>Init: <input type="number" value={unit.initiative} onChange={(e) => onUpdateStats(unit.id, unit.ac, unit.speed, Number(e.target.value))} /></label>
+          <label>AC: <input type="number" value={unit.ac} onChange={(e) => onUpdateStats(unit.id, Number(e.target.value), unit.speed, unit.initiative)} min="0" /></label>
+          <label>Speed: <input type="number" value={unit.speed} onChange={(e) => onUpdateStats(unit.id, unit.ac, Number(e.target.value), unit.initiative)} min="0" /></label>
+          <label>Init: <input type="number" value={unit.initiative} onChange={(e) => onUpdateStats(unit.id, unit.ac, unit.speed, Number(e.target.value))} min="0" /></label>
         </div>
       ) : (
         <div className="unit-stats-display">
@@ -54,6 +55,18 @@ function UnitCard({ unit, showEditor, onUpdateHP, onUpdateStats, onRequestAddBuf
         {unit.buffs.map(buff => (
           <BuffTimer key={buff.id} buff={buff} />
         ))}
+      </div>
+      <div className="unit-description">
+        {showEditor ? (
+          <textarea
+            value={unit.description}
+            onChange={(e) => onUpdateDescription(unit.id, e.target.value)}
+            placeholder="Unit description..."
+            rows={2}
+          />
+        ) : (
+          <div>{unit.description || 'No description'}</div>
+        )}
       </div>
     </div>
   )

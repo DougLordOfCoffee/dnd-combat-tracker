@@ -28,6 +28,8 @@ function HealthBar({ currentHP, maxHP, onUpdate, showEditor }: HealthBarProps) {
   }
 
   const handleCancel = () => {
+    setTempCurrent(currentHP.toString())
+    setTempMax(maxHP.toString())
     setEditing(false)
   }
 
@@ -42,6 +44,7 @@ function HealthBar({ currentHP, maxHP, onUpdate, showEditor }: HealthBarProps) {
             value={tempCurrent}
             onChange={(e) => setTempCurrent(e.target.value)}
             placeholder="Current HP"
+            min="0"
           />
           /
           <input
@@ -49,6 +52,7 @@ function HealthBar({ currentHP, maxHP, onUpdate, showEditor }: HealthBarProps) {
             value={tempMax}
             onChange={(e) => setTempMax(e.target.value)}
             placeholder="Max HP"
+            min="0"
           />
           <button onClick={handleSave}>Save</button>
           <button onClick={handleCancel}>Cancel</button>

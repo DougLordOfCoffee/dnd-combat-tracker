@@ -23,13 +23,14 @@ export interface Unit {
   ac: number
   speed: number
   initiative: number
+  description: string
   buffs: Buff[]
   position: { x: number, y: number }
 }
 
 export interface InitiativeEntry {
   id: string
-  name: string
+  unitId: string
   initiative: number
 }
 
@@ -74,6 +75,7 @@ function App() {
       ac: 10,
       speed: 30,
       initiative: 0,
+      description: '',
       buffs: [],
       position: { x: 0, y: 0 }
     }
@@ -84,8 +86,12 @@ function App() {
     setUnits(prev => prev.map(unit => unit.id === id ? { ...unit, currentHP, maxHP } : unit))
   }
 
-  const updateUnitStats = (id: string, ac: number, speed: number, initiative: number) => {
-    setUnits(prev => prev.map(unit => unit.id === id ? { ...unit, ac, speed, initiative } : unit))
+  const updateUnitInitiative = (id: string, initiative: number) => {
+    setUnits(prev => prev.map(unit => unit.id === id ? { ...unit, initiative } : unit))
+  }
+
+  const updateUnitDescription = (id: string, description: string) => {
+    setUnits(prev => prev.map(unit => unit.id === id ? { ...unit, description } : unit))
   }
 
   const requestAddBuff = (unitId: string) => {
@@ -102,10 +108,10 @@ function App() {
     }
   }
 
-  const addInitiative = (name: string, initiativeValue: number) => {
+  const addInitiative = (unitId: string, initiativeValue: number) => {
     const newEntry: InitiativeEntry = {
       id: Date.now().toString(),
-      name,
+      unitId,
       initiative: initiativeValue
     }
     setInitiative(prev => [...prev, newEntry].sort((a, b) => b.initiative - a.initiative))
@@ -134,6 +140,7 @@ function App() {
             onAddUnit={addUnit}
             onUpdateHP={updateUnitHP}
             onUpdateStats={updateUnitStats}
+            onUpdateDescription={updateUnitDescription}
             onRequestAddBuff={requestAddBuff}
             selectedStatusEffect={selectedStatusEffect}
           />
@@ -144,14 +151,12 @@ function App() {
         <div className="right-panel">
           <InitiativeTracker
             entries={initiative}
+            units={units}
             onAddEntry={addInitiative}
+            onUpdateUnitInitiative={updateUnitInitiative}
             showEditor={showEditor}
           />
         </div>
       </div>
-      <DescriptionBox description={description} onChange={setDescription} showEditor={showEditor} />
-    </div>
-  )
-}
 
 export default App

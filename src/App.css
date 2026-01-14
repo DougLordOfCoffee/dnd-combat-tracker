@@ -41,11 +41,10 @@
 }
 
 .right-panel {
-  width: 280px;
+  flex: 1;
   background: #f8f9fa;
   padding: 10px;
   overflow-y: auto;
-  flex-shrink: 0;
 }
 
 .unit-list {
@@ -76,6 +75,7 @@
   align-items: center;
   gap: 10px;
   margin-bottom: 10px;
+  justify-content: space-between;
 }
 
 .unit-icon {
@@ -83,8 +83,7 @@
 }
 
 .unit-name {
-  flex: 1;
-  font-weight: bold;
+  color: black;
 }
 
 .add-buff {
@@ -318,7 +317,13 @@
   width: 60px;
 }
 
-.effect-button.selected {
-  background: #007bff;
-  color: white;
+.unit-description {
+  margin-top: 10px;
+}
+
+.unit-description textarea {
+  width: 100%;
+  border: 1px solid #dee2e6;
+  border-radius: 4px;
+  resize: vertical;
 }
